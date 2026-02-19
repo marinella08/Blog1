@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portugal para a Alma</title>
+  <meta name="description" content="Travel-blog sobre Portugal: inspiração, destinos, roteiros, planeador e contactos." />
+
+  <style>
+    /* ===== Reset / base ===== */
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      color:var(--fg);
+      background:var(--bg);
+      line-height:1.5;
+      overflow-x:hidden;
+    }
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    button,input,textarea{font:inherit}
+    :root{
+      --bg:#0b0f14;
+      --fg:#eaf0f7;
+      --muted:rgba(234,240,247,.72);
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.09);
+      --stroke:rgba(255,255,255,.14);
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --accent:#29d5a7;
+      --accent2:#ffcc66;
+      --radius:22px;
+      --max:1120px;
+    }
+    body[data-theme="light"]{
+      --bg:#fbfbfd;
+      --fg:#0b0f14;
+      --muted:rgba(11,15,20,.65);
+      --card:rgba(11,15,20,.04);
+      --card2:rgba(11,15,20,.06);
+      --stroke:rgba(11,15,20,.12);
+      --shadow:0 18px 50px rgba(0,0,0,.12);
+      --accent:#0f8f6f;
+      --accent2:#c77d19;
+    }
+    .container{width:min(var(--max),calc(100% - 40px));margin-inline:auto}
+    .muted{color:var(--muted)}
+    .small{font-size:.9rem}
+
+    /* ===== progress ===== */
+    .progress{
+      position:fixed;inset:0 auto auto 0;height:3px;width:0%;
+      background:linear-gradient(90deg,var(--accent),#ff4d6d,var(--accent2));
+      z-index:9999;
+    }
+
+    /* ===== header ===== */
+    .header{
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter:blur(12px);
+      background:color-mix(in srgb,var(--bg) 75%,transparent);
+      border-bottom:1px solid var(--stroke);
+    }
+    .header__inner{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;padding:12px 0;
+    }
+    .brand{display:flex;gap:12px;align-items:center;min-width:220px}
+    .brand__logo{
+      width:44px;height:44px;border-radius:50%;
+      border:1px solid var(--stroke);background:#fff;object-fit:contain;
+    }
+    .brand__text strong{font-weight:800}
+    .brand__text em{display:block;font-style:normal;font-size:.82rem;color:var(--muted)}
+
+    .nav{position:relative}
+    .nav__toggle{
+      display:none;border:1px solid var(--stroke);background:var(--card);
+      color:var(--fg);padding:10px 12px;border-radius:12px;cursor:pointer;
+    }
+    .nav__list{
+      list-style:none;display:flex;gap:18px;margin:0;padding:0;
+    }
+    .nav__list a{
+      font-size:.95rem;color:var(--muted);padding:10px 10px;border-radius:12px;
+    }
+    .nav__list a:hover{background:var(--card);color:var(--fg)}
+    .header__actions{display:flex;gap:10px;align-items:center}
+
+    /* ===== buttons ===== */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:11px 14px;border-radius:14px;border:1px solid var(--stroke);
+      background:var(--card);color:var(--fg);
+      transition:transform .15s ease,background .15s ease,border-color .15s ease;
+      cursor:pointer;
+    }
+    .btn:hover{transform:translateY(-1px);background:var(--card2)}
+    .btn--primary{
+      border-color:color-mix(in srgb,var(--accent) 65%,var(--stroke));
+      background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 45%,transparent),var(--card));
+    }
+    .btn--ghost{background:transparent}
+    .btn--small{padding:9px 12px;border-radius:12px;font-size:.92rem}
+    .pill{
+      display:inline-block;padding:6px 10px;border:1px solid var(--stroke);
+      border-radius:999px;background:var(--card);color:var(--muted);
+    }
+
+    /* ===== hero ===== */
+    .hero{
+      position:relative;min-height:86vh;display:grid;align-items:center;overflow:clip;
+    }
+    .hero__bg{
+      position:absolute;inset:-40% -20% -20% -20%;
+      background:
+        radial-gradient(1200px 600px at 20% 20%,rgba(41,213,167,.35),transparent 55%),
+        radial-gradient(900px 500px at 70% 30%,rgba(255,77,109,.25),transparent 55%),
+        radial-gradient(1100px 700px at 60% 80%,rgba(255,204,102,.22),transparent 55%);
+      filter:blur(2px);transform:translateZ(0);
+    }
+    .hero__inner{
+      position:relative;display:grid;grid-template-columns:1.2fr .8fr;
+      gap:28px;padding:56px 0 42px;
+    }
+    .hero__title{
+      font-size:clamp(2.2rem,4vw,3.8rem);
+      letter-spacing:-0.03em;line-height:1.05;margin:10px 0 10px;
+    }
+    .hero__subtitle{max-width:56ch;color:var(--muted);margin:0 0 18px}
+    .hero__cta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 10px}
+    .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+    .stat{
+      padding:12px 14px;border:1px solid var(--stroke);border-radius:16px;
+      background:color-mix(in srgb,var(--card) 90%,transparent);
+    }
+    .stat__n{font-size:1.3rem;font-weight:900;display:block}
+    .stat__t{font-size:.88rem;color:var(--muted)}
+    .hero__card{display:flex;align-items:center;justify-content:flex-end}
+    .glass{
+      width:min(420px,100%);border-radius:var(--radius);border:1px solid var(--stroke);
+      background:color-mix(in srgb,var(--card) 70%,transparent);
+      box-shadow:var(--shadow);padding:18px;
+    }
+    .mini{margin:14px 0 10px}
+    .mini__row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--stroke)}
+    .mini__row:last-child{border-bottom:none}
+    .link{color:color-mix(in srgb,var(--accent) 70%,var(--fg))}
+    .hero__hint{
+      position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+      color:var(--muted);font-size:.85rem;letter-spacing:.2em;text-transform:uppercase;opacity:.75;
+    }
+
+    /* ===== sections ===== */
+    .section{padding:72px 0}
+    .section--alt{
+      background:color-mix(in srgb,var(--card) 40%,transparent);
+      border-top:1px solid var(--stroke);
+      border-bottom:1px solid var(--stroke);
+    }
+    .section__head{margin-bottom:18px}
+    .section__head h2{
+      margin:0 0 6px;font-size:clamp(1.5rem,2.2vw,2.1rem);letter-spacing:-0.02em;
+    }
+    .section__head.row{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    }
+
+    /* ===== cards ===== */
+    .grid{display:grid;gap:16px}
+    .cards{grid-template-columns:repeat(3,1fr)}
+    .card{
+      border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden;
+      background:var(--card);cursor:pointer;outline:none;
+      transition:transform .18s ease,border-color .18s ease;
+    }
+    .card:hover,.card:focus{
+      transform:translateY(-3px);
+      border-color:color-mix(in srgb,var(--accent) 40%,var(--stroke));
+    }
+    .card__media{height:190px;background-size:cover;background-position:center;filter:saturate(1.05)}
+    .card__body{padding:14px}
+    .card__body h3{margin:0 0 6px;font-size:1.05rem}
+    .tag{
+      display:inline-block;margin-top:10px;padding:5px 10px;border-radius:999px;
+      border:1px solid var(--stroke);color:var(--muted);font-size:.82rem;
+    }
+
+    /* ===== filters ===== */
+    .filters{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{
+      border:1px solid var(--stroke);background:transparent;color:var(--muted);
+      padding:8px 12px;border-radius:999px;cursor:pointer;
+    }
+    .chip:hover{background:var(--card);color:var(--fg)}
+    .chip.is-active{
+      background:color-mix(in srgb,var(--accent) 18%,var(--card));
+      color:var(--fg);
+      border-color:color-mix(in srgb,var(--accent) 40%,var(--stroke));
+    }
+
+    /* ===== tiles ===== */
+    .tiles{grid-template-columns:repeat(4,1fr)}
+    .tile{
+      padding:14px;border:1px solid var(--stroke);border-radius:18px;background:var(--card);
+      position:relative;overflow:hidden;
+    }
+    .tile::before{
+      content:"";position:absolute;inset:-40% -30%;
+      background:radial-gradient(450px 240px at 20% 20%,rgba(41,213,167,.22),transparent 55%);
+      opacity:.9;
+    }
+    .tile>*{position:relative}
+    .tile h3{margin:0 0 6px;font-size:1.03rem}
+    .tile p{margin:0;color:var(--muted);font-size:.92rem}
+
+    /* ===== accordion ===== */
+    .accordion details{
+      border:1px solid var(--stroke);border-radius:18px;background:var(--card);
+      padding:10px 12px;margin-bottom:12px;
+    }
+    .accordion summary{
+      list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+      gap:12px;padding:10px 6px;
+    }
+    .accordion summary::-webkit-details-marker{display:none}
+    .badge{
+      font-size:.82rem;color:var(--muted);border:1px solid var(--stroke);
+      padding:5px 10px;border-radius:999px;
+    }
+    .acc__body{padding:6px 6px 12px}
+    .steps{margin:0 0 12px 18px}
+    .steps li{margin:6px 0;color:var(--muted)}
+
+    /* ===== planner ===== */
+    .planner{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    .planner__links{display:grid;gap:12px}
+    .resource{
+      display:flex;align-items:flex-start;justify-content:space-between;
+      padding:14px;border-radius:18px;border:1px solid var(--stroke);background:var(--card);
+      transition:transform .16s ease;
+    }
+    .resource:hover{transform:translateY(-2px)}
+    .resource span{color:var(--muted)}
+    .resource strong{font-weight:900}
+    .planner__check{
+      padding:16px;border-radius:var(--radius);border:1px solid var(--stroke);background:var(--card);
+    }
+    .check{display:flex;gap:10px;align-items:center;padding:8px 0;color:var(--muted)}
+    .check input{width:18px;height:18px;accent-color:var(--accent)}
+    .note{
+      margin-top:10px;padding:12px;border-radius:16px;border:1px dashed var(--stroke);
+      background:color-mix(in srgb,var(--card2) 60%,transparent);
+    }
+
+    /* ===== about ===== */
+    .about{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+    .about__cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .portrait{
+      height:340px;border-radius:var(--radius);border:1px solid var(--stroke);
+      background:
+        radial-gradient(900px 500px at 30% 20%,rgba(255,204,102,.22),transparent 55%),
+        radial-gradient(700px 460px at 70% 60%,rgba(41,213,167,.25),transparent 55%),
+        linear-gradient(180deg,color-mix(in srgb,var(--card) 75%,transparent),transparent);
+      position:relative;overflow:hidden;box-shadow:var(--shadow);
+    }
+    .portrait__shine{position:absolute;inset:-30% -30%;background:radial-gradient(400px 260px at 30% 30%,rgba(255,255,255,.18),transparent 55%);transform:rotate(12deg)}
+    .portrait__label{
+      position:absolute;left:16px;bottom:16px;padding:12px 14px;border-radius:16px;
+      border:1px solid var(--stroke);
+      background:color-mix(in srgb,var(--bg) 55%,transparent);
+    }
+    .portrait__label span{display:block;color:var(--muted);font-size:.86rem}
+    .portrait__label strong{display:block;font-size:1.1rem}
+
+    /* ===== contact ===== */
+    .contact{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+    .form{
+      border:1px solid var(--stroke);border-radius:var(--radius);background:var(--card);padding:16px;
+    }
+    .form label{display:block;color:var(--muted);margin-bottom:10px}
+    .form input,.form textarea{
+      width:100%;margin-top:6px;padding:11px 12px;border-radius:14px;border:1px solid var(--stroke);
+      background:transparent;color:var(--fg);outline:none;
+    }
+    .form input:focus,.form textarea:focus{border-color:color-mix(in srgb,var(--accent) 55%,var(--stroke))}
+    .form__row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .social{
+      border:1px solid var(--stroke);border-radius:var(--radius);background:var(--card);
+      padding:16px;display:grid;gap:10px;
+    }
+    .social__link{
+      padding:10px 12px;border-radius:14px;border:1px solid var(--stroke);color:var(--muted);
+    }
+    .social__link:hover{background:var(--card2);color:var(--fg)}
+    .social__box{margin-top:6px;padding:12px;border-radius:16px;border:1px dashed var(--stroke)}
+
+    /* ===== footer ===== */
+    .footer{padding:24px 0;border-top:1px solid var(--stroke)}
+    .footer__inner{display:flex;align-items:center;justify-content:space-between}
+    .toTop{
+      padding:8px 10px;border-radius:12px;border:1px solid var(--stroke);
+      background:var(--card);color:var(--muted);
+    }
+    .toTop:hover{color:var(--fg)}
+
+    /* ===== modal ===== */
+    .modal{position:fixed;inset:0;display:none;z-index:2000}
+    .modal[aria-hidden="false"]{display:block}
+    .modal__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+    .modal__panel{
+      position:relative;width:min(860px,calc(100% - 28px));margin:50px auto;
+      border-radius:var(--radius);border:1px solid var(--stroke);
+      background:color-mix(in srgb,var(--bg) 82%,transparent);
+      box-shadow:var(--shadow);overflow:hidden;
+    }
+    .modal__close{
+      position:absolute;top:10px;right:10px;border:1px solid var(--stroke);
+      background:var(--card);color:var(--fg);border-radius:12px;padding:8px 10px;cursor:pointer;
+    }
+    .modal__img{width:100%;height:420px;object-fit:cover}
+    .modal__body{padding:14px 16px 18px}
+
+    /* ===== responsive ===== */
+    @media (max-width:980px){
+      .hero__inner{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr}
+      .tiles{grid-template-columns:repeat(2,1fr)}
+      .planner{grid-template-columns:1fr}
+      .about{grid-template-columns:1fr}
+      .contact{grid-template-columns:1fr}
+    }
+    @media (max-width:760px){
+      .nav__toggle{display:inline-flex}
+      .nav__list{
+        position:absolute;top:64px;right:14px;width:min(320px,calc(100% - 28px));
+        flex-direction:column;padding:12px;border-radius:16px;border:1px solid var(--stroke);
+        background:color-mix(in srgb,var(--bg) 85%,transparent);box-shadow:var(--shadow);
+        display:none;
+      }
+      .nav__list.is-open{display:flex}
+      .header__actions{display:none}
+      .tiles{grid-template-columns:1fr}
+      .form__row{grid-template-columns:1fr}
+    }
+
+    /* ===== reduced motion ===== */
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none !important;scroll-behavior:auto}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a class="brand" href="#top" aria-label="Voltar ao topo">
+        <!-- В GitHub Pages: положи logo.png рядом с index.html или в assets/ -->
+        <img class="brand__logo" src="logo.png" alt="Portugal para a Alma" />
+        <span class="brand__text">
+          <strong>Portugal</strong> para a <strong>Alma</strong>
+          <em>Viajar com o coração</em>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="Navegação">
+        <button class="nav__toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <ul class="nav__list" id="navList">
+          <li><a href="#inspiracao">Inspiração</a></li>
+          <li><a href="#destinos">Destinos</a></li>
+          <li><a href="#roteiros">Roteiros</a></li>
+          <li><a href="#planeador">Planeador</a></li>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#contactos">Contactos</a></li>
+        </ul>
+      </nav>
+
+      <div class="header__actions">
+        <button class="btn btn--ghost" id="themeToggle" type="button" aria-label="Alternar tema">🌙</button>
+        <a class="btn" href="#planeador">Planear viagem</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero__bg" aria-hidden="true"></div>
+
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <p class="pill">🇵🇹 Travel-blog em família</p>
+          <h1 class="hero__title">Portugal para a Alma</h1>
+          <p class="hero__subtitle">
+            Lugares famosos e pouco conhecidos. Histórias, fotos e roteiros reais — com amor e sem pressa.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#destinos">Explorar destinos</a>
+            <button class="btn btn--ghost" type="button" id="openGallery">Ver fotos (demo)</button>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <span class="stat__n" data-count="120">0</span>
+              <span class="stat__t">locais guardados</span>
+            </div>
+            <div class="stat">
+              <span class="stat__n" data-count="28">0</span>
+              <span class="stat__t">roteiros prontos</span>
+            </div>
+            <div class="stat">
+              <span class="stat__n" data-count="4">0</span>
+              <span class="stat__t">pessoas / mini-tours</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__card">
+          <div class="glass">
+            <h3>Próxima inspiração</h3>
+            <p class="muted">“Um fim de semana perfeito em Sintra + Cabo da Roca.”</p>
+
+            <div class="mini">
+              <div class="mini__row"><span>Tempo</span><strong>2 dias</strong></div>
+              <div class="mini__row"><span>Transporte</span><strong>Carro / comboio</strong></div>
+              <div class="mini__row"><span>Vibe</span><strong>natureza + história</strong></div>
+            </div>
+
+            <a class="link" href="#roteiros">Abrir roteiros →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__hint" aria-hidden="true">scroll</div>
+    </section>
+
+    <section class="section" id="inspiracao">
+      <div class="container">
+        <div class="section__head">
+          <h2>Inspiração</h2>
+          <p class="muted">Últimas viagens e histórias (cards demo). Clique para abrir.</p>
+        </div>
+
+        <div class="grid cards" id="stories">
+          <article class="card" tabindex="0"
+            data-title="Lisboa ao pôr do sol"
+            data-meta="Alfama • Miradouros • Pastéis"
+            data-img="https://images.unsplash.com/photo-1525207934214-58e69a8f8aef?auto=format&fit=crop&w=1200&q=80">
+            <div class="card__media" style="background-image:url('https://images.unsplash.com/photo-1525207934214-58e69a8f8aef?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="card__body">
+              <h3>Lisboa ao pôr do sol</h3>
+              <p class="muted">Alfama, miradouros, um roteiro leve.</p>
+              <span class="tag">cidade</span>
+            </div>
+          </article>
+
+          <article class="card" tabindex="0"
+            data-title="Porto & Ribeira"
+            data-meta="Pontes • Francesinha • Rio Douro"
+            data-img="https://images.unsplash.com/photo-1526749837599-b4eba9fd855e?auto=format&fit=crop&w=1200&q=80">
+            <div class="card__media" style="background-image:url('https://images.unsplash.com/photo-1526749837599-b4eba9fd855e?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="card__body">
+              <h3>Porto & Ribeira</h3>
+              <p class="muted">Fotogénico, simples, delicioso.</p>
+              <span class="tag">cidade</span>
+            </div>
+          </article>
+
+          <article class="card" tabindex="0"
+            data-title="Algarve escondido"
+            data-meta="Praias secretas • Falésias • Trilhos"
+            data-img="https://images.unsplash.com/photo-1543429776-2782c41f5b64?auto=format&fit=crop&w=1200&q=80">
+            <div class="card__media" style="background-image:url('https://images.unsplash.com/photo-1543429776-2782c41f5b64?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="card__body">
+              <h3>Algarve escondido</h3>
+              <p class="muted">Onde o turismo ainda não chegou.</p>
+              <span class="tag">natureza</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="destinos">
+      <div class="container">
+        <div class="section__head row">
+          <div>
+            <h2>Destinos</h2>
+            <p class="muted">Filtra por tipo. (Demo: lista local em JS)</p>
+          </div>
+
+          <div class="filters" role="tablist" aria-label="Filtros">
+            <button class="chip is-active" data-filter="all" type="button">Todos</button>
+            <button class="chip" data-filter="cidade" type="button">Cidade</button>
+            <button class="chip" data-filter="natureza" type="button">Natureza</button>
+            <button class="chip" data-filter="ilha" type="button">Ilhas</button>
+            <button class="chip" data-filter="hidden" type="button">Pouco conhecido</button>
+          </div>
+        </div>
+
+        <div class="grid tiles" id="destinationsGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section" id="roteiros">
+      <div class="container">
+        <div class="section__head">
+          <h2>Roteiros</h2>
+          <p class="muted">Seleciona duração e vê o itinerário (accordion).</p>
+        </div>
+
+        <div class="accordion" id="accordion">
+          <details open>
+            <summary><span>Roteiro 1 — 1 dia (Lisboa essencial)</span><span class="badge">1 dia</span></summary>
+            <div class="acc__body">
+              <ol class="steps">
+                <li>Manhã: Belém (Torre + Pastéis)</li>
+                <li>Tarde: Baixa + Chiado</li>
+                <li>Noite: Alfama + miradouro</li>
+              </ol>
+              <button class="btn btn--small" data-copy="Lisboa 1 dia: Belém → Baixa/Chiado → Alfama/Miradouro">Copiar plano</button>
+            </div>
+          </details>
+
+          <details>
+            <summary><span>Roteiro 2 — 2 dias (Sintra + Cabo da Roca)</span><span class="badge">2 dias</span></summary>
+            <div class="acc__body">
+              <ol class="steps">
+                <li>Dia 1: Pena + centro histórico</li>
+                <li>Dia 2: Quinta da Regaleira + Roca</li>
+              </ol>
+              <button class="btn btn--small" data-copy="Sintra 2 dias: Pena → Centro → Regaleira → Cabo da Roca">Copiar plano</button>
+            </div>
+          </details>
+
+          <details>
+            <summary><span>Roteiro 3 — 3–5 dias (Porto & Douro)</span><span class="badge">3–5 dias</span></summary>
+            <div class="acc__body">
+              <ol class="steps">
+                <li>Porto: Ribeira + Livraria + ponte</li>
+                <li>Douro: miradouros + vinhas</li>
+                <li>Extra: Braga / Guimarães</li>
+              </ol>
+              <button class="btn btn--small" data-copy="Porto & Douro 3–5 dias: Porto → Douro → Braga/Guimarães">Copiar plano</button>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="planeador">
+      <div class="container">
+        <div class="section__head">
+          <h2>Planeador</h2>
+          <p class="muted">Links úteis + mini-checklist (tudo editável por ti).</p>
+        </div>
+
+        <div class="planner">
+          <div class="planner__links">
+            <a class="resource" href="https://www.skyscanner.net" target="_blank" rel="noreferrer"><span>✈ Voos</span><strong>Skyscanner</strong></a>
+            <a class="resource" href="https://www.booking.com" target="_blank" rel="noreferrer"><span>🏨 Hotéis</span><strong>Booking</strong></a>
+            <a class="resource" href="https://www.airbnb.com" target="_blank" rel="noreferrer"><span>🏠 Alojamento</span><strong>Airbnb</strong></a>
+            <a class="resource" href="https://www.omio.com" target="_blank" rel="noreferrer"><span>🚌 Comboio/Autocarro</span><strong>Omio</strong></a>
+          </div>
+
+          <div class="planner__check">
+            <h3>Checklist rápida</h3>
+            <label class="check"><input type="checkbox" /> Datas e orçamento</label>
+            <label class="check"><input type="checkbox" /> Voos / transporte</label>
+            <label class="check"><input type="checkbox" /> Alojamento</label>
+            <label class="check"><input type="checkbox" /> Seguro</label>
+            <label class="check"><input type="checkbox" /> Plano diário (roteiro)</label>
+
+            <div class="note">
+              <p class="muted">Dica: guarda os teus links e notas aqui. Depois tu trocas por conteúdo real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sobre">
+      <div class="container about">
+        <div class="about__text">
+          <h2>Sobre mim</h2>
+          <p>Sou a Maryna. Vivo em Portugal e viajo em família. Este blog é um arquivo bonito — e prático — do que realmente vale a pena.</p>
+          <p class="muted">Mini-tours (até 4 pessoas) podem acontecer quando a agenda e o grupo encaixarem.</p>
+          <div class="about__cta">
+            <a class="btn btn--primary" href="#contactos">Falar comigo</a>
+            <a class="btn btn--ghost" href="#destinos">Ver destinos</a>
+          </div>
+        </div>
+
+        <div class="about__media" aria-hidden="true">
+          <div class="portrait">
+            <div class="portrait__shine"></div>
+            <div class="portrait__label">
+              <span>Portugal</span>
+              <strong>para a Alma</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="contactos">
+      <div class="container">
+        <div class="section__head">
+          <h2>Contactos</h2>
+          <p class="muted">Подпишись/свяжись. Форма — прототип.</p>
+        </div>
+
+        <div class="contact">
+          <form class="form" id="contactForm">
+            <div class="form__row">
+              <label>Nome
+                <input required name="name" placeholder="Maryna" />
+              </label>
+              <label>Email
+                <input required type="email" name="email" placeholder="you@email.com" />
+              </label>
+            </div>
+
+            <label>Mensagem
+              <textarea required name="message" rows="5" placeholder="Quero saber sobre um roteiro para..."></textarea>
+            </label>
+
+            <button class="btn btn--primary" type="submit">Enviar</button>
+            <p class="muted small" id="formMsg" role="status" aria-live="polite"></p>
+          </form>
+
+          <aside class="social">
+            <a class="social__link" href="#" aria-label="Instagram">Instagram</a>
+            <a class="social__link" href="#" aria-label="Facebook">Facebook</a>
+            <a class="social__link" href="#" aria-label="Telegram">Telegram</a>
+            <a class="social__link" href="#" aria-label="Email">Email</a>
+
+            <div class="social__box">
+              <strong>Newsletter</strong>
+              <p class="muted small">1 письмо в месяц. Только лучшее.</p>
+              <button class="btn btn--small" id="fakeSubscribe" type="button">Subscrever</button>
+              <p class="muted small" id="subMsg" aria-live="polite"></p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <p class="muted small">© <span id="year"></span> Portugal para a Alma</p>
+        <a class="toTop" href="#top">↑ Topo</a>
+      </div>
+    </footer>
+  </main>
+
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal__backdrop" data-close="1"></div>
+    <div class="modal__panel" role="document">
+      <button class="modal__close" aria-label="Fechar" data-close="1">✕</button>
+      <img class="modal__img" id="modalImg" alt="" />
+      <div class="modal__body">
+        <h3 id="modalTitle"></h3>
+        <p class="muted" id="modalMeta"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== helpers =====
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => [...root.querySelectorAll(sel, root)];
+
+    // ===== theme =====
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    function setTheme(theme){
+      document.body.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      const t = $('#themeToggle');
+      if (t) t.textContent = theme === 'light' ? '🌙' : '☀️';
+    }
+    (function initTheme(){
+      const saved = localStorage.getItem('theme');
+      setTheme(saved || (prefersLight ? 'light' : 'dark'));
+    })();
+
+    $('#themeToggle')?.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme');
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+
+    // ===== nav mobile =====
+    const navToggle = $('#navToggle');
+    const navList = $('#navList');
+    navToggle?.addEventListener('click', () => {
+      const open = navList.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    $$('#navList a').forEach(a => a.addEventListener('click', () => {
+      navList.classList.remove('is-open');
+      navToggle.setAttribute('aria-expanded','false');
+    }));
+
+    // ===== progress bar =====
+    const progress = $('#progress');
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      progress.style.width = `${scrolled}%`;
+    }, { passive:true });
+
+    // ===== counters =====
+    function animateCounters(){
+      const counters = $$('[data-count]');
+      counters.forEach(el => {
+        const target = Number(el.dataset.count || 0);
+        const dur = 900;
+        const start = performance.now();
+        function step(t){
+          const p = Math.min((t - start) / dur, 1);
+          el.textContent = Math.round(target * (0.2 + 0.8 * p)).toString();
+          if (p < 1) requestAnimationFrame(step);
+          else el.textContent = target.toString();
+        }
+        requestAnimationFrame(step);
+      });
+    }
+    let countersDone = false;
+    const hero = $('.hero');
+    const obs = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting) && !countersDone){
+        countersDone = true; animateCounters();
+      }
+    }, { threshold:0.35 });
+    if (hero) obs.observe(hero);
+
+    // ===== modal =====
+    const modal = $('#modal');
+    const modalImg = $('#modalImg');
+    const modalTitle = $('#modalTitle');
+    const modalMeta = $('#modalMeta');
+
+    function openModal({img,title,meta}){
+      modalImg.src = img;
+      modalImg.alt = title;
+      modalTitle.textContent = title;
+      modalMeta.textContent = meta || '';
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(){
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+
+    modal?.addEventListener('click', (e) => {
+      if (e.target.dataset.close) closeModal();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+    });
+
+    $$('#stories .card').forEach(card => {
+      const run = () => openModal({ img: card.dataset.img, title: card.dataset.title, meta: card.dataset.meta });
+      card.addEventListener('click', run);
+      card.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && run());
+    });
+
+    $('#openGallery')?.addEventListener('click', () => {
+      openModal({
+        img: 'https://images.unsplash.com/photo-1525207934214-58e69a8f8aef?auto=format&fit=crop&w=1400&q=80',
+        title: 'Galeria (demo)',
+        meta: 'Depois substituis por fotos reais.'
+      });
+    });
+
+    // ===== destinations + filter =====
+    const destinations = [
+      { name:'Lisboa', type:'cidade', note:'miradouros • cafés • história' },
+      { name:'Porto', type:'cidade', note:'ribeira • douro • pontes' },
+      { name:'Sintra', type:'hidden', note:'castelos • natureza • neblina' },
+      { name:'Algarve', type:'natureza', note:'falésias • praias • trilhos' },
+      { name:'Madeira', type:'ilha', note:'levadas • montanhas • mar' },
+      { name:'Açores', type:'ilha', note:'lagoas • vulcões • silêncio' },
+      { name:'Óbidos', type:'hidden', note:'vila medieval • charme' },
+      { name:'Serra da Estrela', type:'natureza', note:'neve • trilhos • vistas' },
+    ];
+    const grid = $('#destinationsGrid');
+    function renderDestinations(filter='all'){
+      const items = filter === 'all' ? destinations : destinations.filter(d => d.type === filter);
+      grid.innerHTML = items.map(d => `
+        <article class="tile" data-type="${d.type}">
+          <h3>${d.name}</h3>
+          <p>${d.note}</p>
+          <span class="tag">${d.type}</span>
+        </article>
+      `).join('');
+    }
+    renderDestinations('all');
+
+    $$('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.chip').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        renderDestinations(btn.dataset.filter);
+      });
+    });
+
+    // ===== copy itinerary =====
+    $$('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const original = 'Copiar plano';
+        try{
+          await navigator.clipboard.writeText(btn.dataset.copy);
+          btn.textContent = 'Copiado ✓';
+        }catch{
+          btn.textContent = 'Não copiou';
+        }
+        setTimeout(() => (btn.textContent = original), 1200);
+      });
+    });
+
+    // ===== fake forms =====
+    $('#contactForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      $('#formMsg').textContent = 'Enviado (demo). Depois ligamos isto a um email/form real.';
+      e.target.reset();
+    });
+    $('#fakeSubscribe')?.addEventListener('click', () => {
+      $('#subMsg').textContent = 'Feito (demo).';
+      setTimeout(() => ($('#subMsg').textContent=''), 1200);
+    });
+
+    // year
+    $('#year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
